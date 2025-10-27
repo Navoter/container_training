@@ -53,3 +53,12 @@
         index_var: index
       tags:
         - trng_env_trainee_containers
+
+    - name: Allow UFW ports for trainees
+      community.general.ufw:
+        rule: allow
+        port: "{{ trng_env_port_start }}:{{ trng_env_port_start + trng_env_trainees_count - 1 }}"
+        proto: tcp
+      tags:
+        - trng_env_trainee_containers
+        - trng_env_ufw

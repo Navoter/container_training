@@ -13,3 +13,8 @@
 - name: Import configuration tasks for trainees
   ansible.builtin.import_tasks:
     file: config_trainees.yml
+
+- name: Import configuration tasks for trainees
+  ansible.builtin.import_tasks:
+    file: cleanup.yml
+  when: trng_env_cleanup

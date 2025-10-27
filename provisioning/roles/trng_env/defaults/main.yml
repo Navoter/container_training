@@ -7,30 +7,32 @@ trng_env_image_build_path: "/opt/training-image"
 trng_env_image_container_name: "podman-training-container"
 trng_env_image_base_image: "ubuntu:24.04"
 trng_env_trainee_container_state: "started"  # absent present stopped started created quadlet
+trng_env_cleanup: false
 trng_env_image_apt_packages:
-  - podman
-  - podman-docker
-  - jq
-  - git
-  - vim
-  - wget
+  - bash-completion
+  - ca-certificates
   - curl
+  - fuse-overlayfs
+  - git
+  - iproute2
   - iputils-ping
+  - jq
+  - less
+  - nano
+  - net-tools
   - openssh-client
   - openssh-server
-  - ca-certificates
-  - podman-docker
   - openssl
-  - uidmap
-  - rsync
-  - net-tools
-  - nano
-  - bash-completion
-  - less
-  - iproute2
+  - podman
+  - podman-docker
+  - podman-docker
   - python3
   - python3-pip
   - python3-venv
-  - sudo
-  - fuse-overlayfs
+  - rsync
   - slirp4netns
+  - sudo
+  - tmux
+  - uidmap
+  - vim
+  - wget

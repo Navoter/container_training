@@ -1,0 +1,60 @@
+---
+# code: language=ansible
+# tasks file for trng_env role
+
+- name: Cleanup
+  become: true
+  tags:
+    - trng_env_cleanup
+  block:
+    - name: Stop containers for trainees
+      containers.podman.podman_container:
+        name: "{{ item }}"
+        image: "{{ trng_env_training_image }}"
+        state: absent
+      loop: "{{ trng_env_trainees }}"
+
+    - name: Remove Podman training image
+      containers.podman.podman_image:
+        name: "{{ trng_env_training_image }}"
+        path: "{{ trng_env_image_build_path }}"
+        build:
+          cache: false
+          force_rm: true
+        state: absent
+        executable: podman
+
+    - name: Prune everything
+      containers.podman.podman_prune:
+        system: true
+
+    - name: Remove directorys created for trainees and image build
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "/srv/workspaces"
+        - "{{ trng_env_image_build_path }}"
+
+    - name: Remove UFW ports for trainees
+      community.general.ufw:
+        rule: allow
+        port: "{{ trng_env_port_start }}:{{ trng_env_port_start + trng_env_trainees_count - 1 }}"
+        proto: tcp
+        delete: true
+      tags:
+        - trng_env_ufw
+
+    - name: Remove Allow SSH from eth0 to podman0 container network
+      community.general.ufw:
+        route: true
+        rule: allow
+        interface_in: eth0
+        interface_out: podman0
+        proto: tcp
+        to_port: 22
+        to_ip: 10.88.0.0/16
+        comment: "Erlaube SSH-Verkehr von eth0 zu Podman-Containern"
+        delete: true
+      tags:
+        - trng_env_ufw
