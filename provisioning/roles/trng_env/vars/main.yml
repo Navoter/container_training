@@ -1,0 +1,6 @@
+---
+# code: language=ansible
+# var file for trng_env role
+trng_env_trainees: "{{ query('sequence', 'format=trainee%02d start=1 end=' ~ trng_env_trainees_count) | list }}"
+trng_env_password_prefix: "STO_secret_"
+trng_env_port_start: 2201

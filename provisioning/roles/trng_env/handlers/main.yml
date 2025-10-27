@@ -1,0 +1,7 @@
+# code: language=ansible
+# handler file for trng_env role
+- name: Reload ssh
+  ansible.builtin.service:
+    name: ssh
+    state: reloaded
+  listen: reload ssh

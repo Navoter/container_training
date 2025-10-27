@@ -1,0 +1,56 @@
+# IDEs und Editoren
+.idea/
+*.swp
+*.swo
+
+# Betriebssysteme
+.DS_Store
+Thumbs.db
+
+# Abhängigkeits-Verzeichnisse
+node_modules/
+vendor/
+build/
+dist/
+
+# Logs
+*.log
+log/
+tmp/
+
+# Temporäre Dateien und Konfigurationen
+.env.*
+*.iml
+*.class
+*.pyc
+*.o
+*.out
+.data
+/public/build
+
+# Virtual Environments
+venv/
+.venv/
+env/
+.env/
+
+# Ansible spezifisch
+.ansible
+*.retry
+.vault_pass.txt
+.vaultpass
+.vault_password.txt
+vaultpass.txt
+
+# Molecule spezifisch
+.molecule/ 
+test/
+
+# Vagrant spezifisch
+.vagrant/
+
+# Visual Studio Code
+.vscode/
+.history/
+.settings/
+*.code-workspace

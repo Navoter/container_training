@@ -1,0 +1,43 @@
+---
+# code: language=ansible
+# tasks file for trng_env role
+
+- name: Configuration block to setup training environment
+  become: true
+  tags:
+    - trng_env
+    - trng_env_config
+  block:
+    - name: Ensure trainings image build path exists
+      ansible.builtin.file:
+        path: "{{ trng_env_image_build_path }}"
+        state: directory
+        mode: '0755'
+        owner: root
+        group: root
+
+    - name: Copy entrypoint skript
+      ansible.builtin.copy:
+        src: "entrypoint.sh"
+        dest: "{{ trng_env_image_build_path }}/entrypoint.sh"
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Copy training image Dockerfile and related files
+      ansible.builtin.template:
+        src: "Dockerfile.j2"
+        dest: "{{ trng_env_image_build_path }}/Dockerfile"
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Build the Podman training image
+      containers.podman.podman_image:
+        name: "{{ trng_env_training_image }}"
+        path: "{{ trng_env_image_build_path }}"
+        build:
+          cache: false
+          force_rm: true
+        state: present
+        executable: podman

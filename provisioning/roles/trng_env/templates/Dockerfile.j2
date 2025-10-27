@@ -1,0 +1,48 @@
+# --- Dockerfile für Schulung ---
+FROM {{ trng_env_image_base_image | default('ubuntu:24.04') }}
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Basis-Tools, Podman und sudo installieren
+RUN apt-get update && \
+{% if trng_env_image_apt_packages | default([]) | length > 0 %}    apt-get install -y \
+        {{ trng_env_image_apt_packages | join(' \\\n        ') }} && \
+{% endif %}
+    rm -rf /var/lib/apt/lists/*
+
+# SSH vorbereiten
+RUN mkdir -p /var/run/sshd && \
+    echo 'root:root' | chpasswd && \
+    sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+# Compose-Kompatibilität – Alias für Podman
+RUN echo "alias docker='podman'" >> /etc/bash.bashrc && \
+    echo "alias docker-compose='podman-compose'" >> /etc/bash.bashrc
+
+# Benutzer für Container
+ARG USERNAME=trainee
+
+# Arbeitsverzeichnis für die Trainees
+RUN mkdir -p /workspace && \
+    useradd -m -d /workspace -s /bin/bash ${USERNAME} && \
+    echo "${USERNAME}:podman" | chpasswd && \
+    # Subuid/Subgid für Rootless Podman
+    echo "${USERNAME}:100000:65536" >> /etc/subuid && \
+    echo "${USERNAME}:100000:65536" >> /etc/subgid && \
+    # sudo ohne Passwort
+    echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers && \
+    chown -R ${USERNAME}:${USERNAME} /workspace && \
+    mkdir -p /run/user/1000 && chown -R ${USERNAME}:${USERNAME} /run/user/1000 && chmod 700 /run/user/1000
+
+# Entrypoint-Skript kopieren und ausführbar machen
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# USER erst nach Entrypoint setzen (SSH muss root sein)
+WORKDIR /workspace
+ENV HOME=/workspace
+ENV XDG_RUNTIME_DIR=/run/user/1000
+ENV STORAGE_DRIVER=vfs
+
+# Entrypoint
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

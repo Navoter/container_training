@@ -1,0 +1,15 @@
+---
+# code: language=ansible
+# tasks file for trng_env role
+
+- name: Import installation tasks
+  ansible.builtin.import_tasks:
+    file: install.yml
+
+- name: Import configuration tasks
+  ansible.builtin.import_tasks:
+    file: config.yml
+
+- name: Import configuration tasks for trainees
+  ansible.builtin.import_tasks:
+    file: config_trainees.yml

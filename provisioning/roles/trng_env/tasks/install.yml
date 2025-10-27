@@ -1,0 +1,35 @@
+---
+# code: language=ansible
+# tasks file for trng_env role
+
+- name: Installation of required packages
+  become: true
+  tags:
+    - trng_env
+    - trng_env_install
+  block:
+    - name: Ensure required packages are installed
+      ansible.builtin.apt:
+        name:
+          - podman
+          - podman-docker
+          - uidmap
+          - acl
+        state: present
+        cache_valid_time: 3600
+        update_cache: true
+      register: trng_env_install_packages
+
+    - name: Start and enable podman service
+      ansible.builtin.systemd:  # noqa no-handler
+        name: podman
+        state: started
+        enabled: true
+      when: trng_env_install_packages.changed
+
+    - name: Ensure podman is running
+      ansible.builtin.systemd:  # noqa no-handler
+        name: podman
+        state: started
+        enabled: true
+      when: not trng_env_install_packages.changed

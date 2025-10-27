@@ -1,0 +1,55 @@
+---
+# code: language=ansible
+# tasks file for trng_env role
+
+- name: Configuration block to setup all trainees
+  become: true
+  tags:
+    - trng_env
+    - trng_env_configure_trainees
+  block:
+    - name: Ensure workspace base exists
+      ansible.builtin.file:
+        path: /srv/workspaces
+        state: directory
+        mode: '0755'
+
+    - name: Create workspace per trainee
+      ansible.builtin.file:
+        path: "/srv/workspaces/{{ item }}"
+        state: directory
+        mode: '1777'
+      loop: "{{ trng_env_trainees }}"
+
+    - name: Start containers for trainees
+      containers.podman.podman_container:
+        name: "{{ item }}"
+        image: "{{ trng_env_training_image }}"
+        state: started
+        detach: true
+        privileged: true
+        tty: true
+        interactive: true
+        restart_policy: always
+        hostname: "{{ item }}"
+        cap_add:
+          - NET_ADMIN
+        device:
+          - /dev/fuse
+          - /dev/net/tun
+        volume:
+          - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+          - "/srv/workspaces/{{ item }}:/workspace:Z"
+        ports:
+          - "{{ trng_env_port_start + index }}:22"
+        env:
+          USERNAME: "{{ item }}"
+          HOME: "/workspace"
+          STORAGE_DRIVER: "vfs"
+          PASSWORD: "{{ trng_env_password_prefix + item }}"
+        command: /bin/bash
+      loop: "{{ trng_env_trainees }}"
+      loop_control:
+        index_var: index
+      tags:
+        - trng_env_trainee_containers
