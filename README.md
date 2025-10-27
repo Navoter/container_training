@@ -1,4 +1,4 @@
-# Projekt für die Bereitstellung eine Container Schulung
+# Bereitstellen einer PinP Umgebung für Schulungen
 
 Installation von Ansible
 ```
