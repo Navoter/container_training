@@ -54,3 +54,7 @@ test/
 .history/
 .settings/
 *.code-workspace
+
+# Vault Dateien
+*.kdbx
+*.kdb

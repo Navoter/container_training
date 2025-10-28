@@ -7,7 +7,7 @@
   tags:
     - trng_env_cleanup
   block:
-    - name: Stop containers for trainees
+    - name: Stop and remove trainee containers
       containers.podman.podman_container:
         name: "{{ item }}"
         image: "{{ trng_env_training_image }}"

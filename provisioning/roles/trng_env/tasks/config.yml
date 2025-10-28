@@ -36,6 +36,8 @@
         mode: '0755'
         owner: root
         group: root
+      tags:
+        - trng_env_image_build
 
     - name: Copy entrypoint skript
       ansible.builtin.copy:
@@ -44,6 +46,8 @@
         owner: root
         group: root
         mode: '0644'
+      tags:
+        - trng_env_image_build
 
     - name: Copy training image Dockerfile and related files
       ansible.builtin.template:
@@ -52,6 +56,8 @@
         owner: root
         group: root
         mode: '0644'
+      tags:
+        - trng_env_image_build
 
     - name: Build the Podman training image
       containers.podman.podman_image:
@@ -62,3 +68,5 @@
           force_rm: true
         state: present
         executable: podman
+      tags:
+        - trng_env_image_build
