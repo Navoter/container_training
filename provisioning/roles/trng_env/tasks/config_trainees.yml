@@ -21,6 +21,17 @@
         mode: '1777'
       loop: "{{ trng_env_trainees }}"
 
+    - name: Copy trainee docs to workspaces
+      ansible.builtin.copy:
+        src: "docs/"
+        dest: "/srv/workspaces/{{ item }}/docs/"
+        owner: root
+        group: root
+        mode: '0755'
+      loop: "{{ trng_env_trainees }}"
+      tags:
+        - trng_env_trainee_docs
+
     - name: Start containers for trainees
       containers.podman.podman_container:
         name: "{{ item }}"
