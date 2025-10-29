@@ -58,3 +58,7 @@ test/
 # Vault Dateien
 *.kdbx
 *.kdb
+
+# Powerpoint Dateien
+~$*.pptx
+*.pptx
