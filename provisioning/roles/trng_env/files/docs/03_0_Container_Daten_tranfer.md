@@ -40,7 +40,7 @@ Wir bearbeiten die Datei auf dem Host, um zu zeigen, dass die Änderungen nach d
 
 ```bash
 # Ersetze den Inhalt durch eine einfache neue Zeile:
-echo "<h1>Willkommen zur Podman Schulung!</h1>" > index.html
+echo '<h1>Willkommen zur Podman Schulung!</h1>' > index.html
 ```
 
 -----
@@ -98,7 +98,7 @@ podman run -d --name nginx-training-new -p 8081:80 docker.io/library/nginx:lates
     ```
 2.  **Container erneut starten (vom Original-Image):**
     ```bash
-    podman run -d --name nginx-training-neu -p 8080:80 docker.io/library/nginx:latest
+    podman run -d --name nginx-training -p 8080:80 docker.io/library/nginx:latest
     ```
 
 **Überprüfung:**
@@ -115,6 +115,6 @@ Zum Abschluss der Schulungssitzung beenden Sie die Container und entfernen die e
 
 ```bash
 # Beide Container stoppen und löschen
-podman stop nginx-training nginx-training-neu
-podman rm nginx-training nginx-training-neu
+podman stop nginx-training nginx-training-new
+podman rm nginx-training nginx-training-new
 ```

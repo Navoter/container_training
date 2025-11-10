@@ -35,7 +35,7 @@ Wir kopieren unsere geänderte `index.html` auf das **Volume** *im laufenden Con
 1.  **Geänderte Datei zurückkopieren (Host → Volume im Container):**
     *(Voraussetzung: Die Datei `index.html` aus der vorherigen Übung existiert noch auf dem Host.)*
     ```bash
-    podman cp index.html nginx-volume:/usr/share/nginx/html/index.html
+    podman cp index.html nginx-training:/usr/share/nginx/html/index.html
     ```
 2.  **Webseite prüfen:** Öffnen Sie im Browser: `http://localhost:8080`.
       * **Ergebnis:** Es sollte die Überschrift **"Willkommen zur Podman Schulung\!"** angezeigt werden.
@@ -50,7 +50,7 @@ Wir kopieren unsere geänderte `index.html` auf das **Volume** *im laufenden Con
     *(Das Volume `nginx-data` bleibt erhalten\!)*
 2.  **Neuen Container starten, der das GLEICHE Volume verwendet:**
     ```bash
-    podman run -d --name nginx-training-neu \
+    podman run -d --name nginx-training-new \
         -p 8081:80 \
         -v nginx-data:/usr/share/nginx/html \
         docker.io/library/nginx:latest
@@ -67,6 +67,9 @@ podman volume ls
 
 # Löscht das Volume und damit die dauerhaft gespeicherten Daten!
 podman volume rm nginx-data
+
+# Löscht das Volume und inklusive der verbundenen Container (-f = force)
+podman volume rm nginx-data -f
 ```
 
 -----
@@ -106,7 +109,7 @@ podman run -d --name nginx-bind-mount \
 1.  **Webseite prüfen:** Öffnen Sie im Browser: `http://localhost:8082`. Die geänderte Seite ist sichtbar.
 2.  **Änderung auf dem Host vornehmen:** Ändere die Datei auf deinem Host.
     ```bash
-    echo "<h1>Aktualisiert über Bind Mount!</h1>" > host-website/index.html
+    echo '<h1>Aktualisiert über Bind Mount!</h1>' > host-website/index.html
     ```
 3.  **Browser prüfen:** Laden Sie `http://localhost:8082` neu.
       * **Ergebnis:** Die Änderung ist **sofort sichtbar**, da der Container direkt das Host-Verzeichnis liest.
@@ -117,8 +120,8 @@ podman run -d --name nginx-bind-mount \
 
 ```bash
 # Container stoppen und löschen
-podman stop nginx-bind-mount nginx-training-neu
-podman rm nginx-bind-mount nginx-training-neu
+podman stop nginx-bind-mount nginx-training-new
+podman rm nginx-bind-mount nginx-training-new
 
 # Lokales Verzeichnis löschen
 rm -r host-website

@@ -64,19 +64,20 @@ Wir erstellen ein Image, das eine einfache "Hallo Welt"-Seite bereitstellt.
 Erstellen Sie ein neues Verzeichnis und die notwendigen Dateien:
 
 ```bash
-mkdir my-custom-web
-cd my-custom-web
+mkdir ~/my-custom-web
+cd ~/my-custom-web
 
 # Erstellt die Webseite
-echo "<h1>Hallo von meinem eigenen Podman Image</h1>" > index.html
+echo '<h1>Hallo von meinem eigenen Podman Image</h1>' > index.html
 ```
 
 ### Schritt 2: Dockerfile erstellen
 
-Erstellen Sie im selben Verzeichnis eine Datei namens `Dockerfile` (ohne Erweiterung) mit folgendem Inhalt:
+Erstellen Sie im selben Verzeichnis eine Datei namens `Containerfile` (ohne Erweiterung) mit folgendem Inhalt:
 
-```dockerfile
-# Dockerfile
+```bash
+cat > Containerfile << EOL
+# Containerfile
 
 # BASIS-IMAGE: Startet von einem schlanken, offiziellen Nginx-Image
 FROM docker.io/library/nginx:latest
@@ -87,6 +88,7 @@ COPY index.html /usr/share/nginx/html/index.html
 
 # PORT: Dokumentiert, welcher Port die Anwendung bereitstellt (optional, aber empfohlen)
 EXPOSE 80
+EOL
 ```
 
 ### Schritt 3: Image bauen (Build)
@@ -108,10 +110,10 @@ podman build -t my-web-image:v1.0 .
 Starten Sie einen Container basierend auf Ihrem neu erstellten Image.
 
 ```bash
-podman run -d --name my-test-server -p 8083:80 my-web-image:v1.0
+podman run -d --name my-test-server -p 8080:80 my-web-image:v1.0
 ```
 
-**Überprüfung:** Öffnen Sie im Browser: `http://localhost:8081`. Es sollte die Ausgabe **"Hallo von meinem eigenen Podman Image\!"** erscheinen.
+**Überprüfung:** Öffnen Sie im Browser: `http://localhost:8080`. Es sollte die Ausgabe **"Hallo von meinem eigenen Podman Image\!"** erscheinen.
 
 -----
 
@@ -126,6 +128,6 @@ podman rm my-test-server
 podman rmi my-web-image:v1.0
 
 # Zum vorherigen Verzeichnis wechseln und temporäre Dateien löschen
-cd ..
-rm -r my-custom-web
+cd ~
+rm -r ~/my-custom-web
 ```

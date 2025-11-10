@@ -21,13 +21,22 @@
         mode: '1777'
       loop: "{{ trng_env_trainees }}"
 
+    - name: Ensure docs directory exists in trainee workspaces
+      ansible.builtin.file:
+        dest: "/srv/workspaces/{{ item }}/docs"
+        state: directory
+        mode: '1777'
+      loop: "{{ trng_env_trainees }}"
+      tags:
+        - trng_env_trainee_docs
+
     - name: Copy trainee docs to workspaces
       ansible.builtin.copy:
         src: "docs/"
         dest: "/srv/workspaces/{{ item }}/docs/"
         owner: root
         group: root
-        mode: '0755'
+        mode: '0666'
       loop: "{{ trng_env_trainees }}"
       tags:
         - trng_env_trainee_docs

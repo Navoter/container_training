@@ -7,4 +7,4 @@
   roles:
     - role: trng_env
       vars:
-        trng_env_trainees_count: 3
+        trng_env_trainees_count: 10

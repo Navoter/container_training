@@ -78,3 +78,10 @@ Du kannst die Logs auch nach einer Zeitangabe filtern (z. B. nur die letzten 10 
 podman logs --since 10m nginx-training
 ```
 
+## Aufräumen
+
+```bash
+# Container stoppen und löschen
+podman stop nginx-training
+podman rm nginx-training
+```

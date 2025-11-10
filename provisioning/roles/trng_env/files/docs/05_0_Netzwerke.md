@@ -28,11 +28,15 @@ Wir starten den zweiten Container, unseren **Backend-Dienst** (`backend-app`), u
 ## Schritt 3: Proxy-Konfiguration vorbereiten
 
 Der **Frontend-Proxy** muss wissen, dass er alle Anfragen an `/app/` an den Backend-Dienst weiterleiten soll. Wir erstellen dafür eine Konfigurationsdatei auf dem Host.
+1. **Frontend Ordner erstellen**
+   ```bash
+   mkdir ~/frontend
+   ```
 
-1.  **Lokale Konfigurationsdatei (`proxy.conf`) erstellen:**
+2.  **Lokale Konfigurationsdatei (`proxy.conf`) erstellen:**
     ```bash
     # Erstellt die Konfiguration direkt auf dem Host
-    cat > proxy.conf << EOL
+    cat > ~/frontend/proxy.conf << EOL
     server {
         listen 80;
 
@@ -51,9 +55,9 @@ Der **Frontend-Proxy** muss wissen, dass er alle Anfragen an `/app/` an den Back
     }
     EOL
     ```
-2.  **Lokale Frontend-Seite erstellen:**
+3.  **Lokale Frontend-Seite erstellen:**
     ```bash
-    echo "<h1>Frontend-Proxy: Standard-Seite</h1><p>Zum Backend-Dienst: <a href=\"/app/\">Hier klicken</a></p>" > frontend-index.html
+    echo "<h1>Frontend-Proxy: Standard-Seite</h1><p>Zum Backend-Dienst: <a href=\"/app/\">Hier klicken</a></p>" > ~/frontend/index.html
     ```
 
 ## Schritt 4: Frontend-Proxy starten
@@ -64,8 +68,8 @@ Wir starten den Haupt-Nginx-Container (`frontend-proxy`), binden ihn an Host-Por
 podman run -d --name frontend-proxy \
     -p 8080:80 \
     --network web-net \
-    -v $(pwd)/proxy.conf:/etc/nginx/conf.d/default.conf:Z \
-    -v $(pwd)/frontend-index.html:/usr/share/nginx/html/index.html:Z \
+    -v ~/frontend/proxy.conf:/etc/nginx/conf.d/default.conf:Z \
+    -v ~/frontend/index.html:/usr/share/nginx/html/index.html:Z \
     docker.io/library/nginx:latest
 ```
 
