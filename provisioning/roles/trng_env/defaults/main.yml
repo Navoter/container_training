@@ -24,7 +24,6 @@ trng_env_image_apt_packages:
   - openssh-server
   - openssl
   - podman
-  - podman-docker
   - podman-compose
   - python3
   - python3-pip
